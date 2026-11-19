@@ -1,0 +1,19 @@
+{% extends "archive/base.html" %}
+{% block content %}
+  <h1>Поиск работ</h1>
+  <form method="get">
+    <p>Ключевое слово: <input name="q" value="{{ request.GET.q }}"></p>
+    <p>Год: <input name="year" value="{{ request.GET.year }}"></p>
+    <p>Руководитель: <input name="supervisor" value="{{ request.GET.supervisor }}"></p>
+    <button type="submit">Найти</button>
+  </form>
+  <hr>
+  {% for work in works %}
+    <article>
+      <h2>{{ work.title }}</h2>
+      <small>{{ work.discipline.name }} · {{ work.supervisor }} · {{ work.year }} г.</small>
+    </article>
+  {% empty %}
+    <p>Ничего не найдено.</p>
+  {% endfor %}
+{% endblock %}

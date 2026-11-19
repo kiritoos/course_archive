@@ -1,0 +1,18 @@
+{% extends "archive/base.html" %}
+{% block content %}
+  <a href="{% url 'archive:create' %}">+ Добавить работу</a>
+  {% for work in works %}
+    <article>
+      <h2>{{ work.title }}</h2>
+      <p>{{ work.content|truncatechars:150 }}</p>
+      <small>
+        {{ work.discipline.name }} · {{ work.author.username }} · {{ work.year }} г.
+        {% for kw in work.keywords.all %}#{{ kw.name }} {% endfor %}
+      </small>
+      <a href="{% url 'archive:update' work.pk %}">Изменить</a>
+      <a href="{% url 'archive:delete' work.pk %}">Удалить</a>
+    </article>
+  {% empty %}
+    <p>Работ пока нет.</p>
+  {% endfor %}
+{% endblock %}

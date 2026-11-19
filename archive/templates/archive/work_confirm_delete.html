@@ -1,0 +1,9 @@
+{% extends "archive/base.html" %}
+{% block content %}
+  <p>Удалить работу «{{ work.title }}»?</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Да, удалить</button>
+    <a href="{% url 'archive:index' %}">Отмена</a>
+  </form>
+{% endblock %}
