@@ -1,12 +1,18 @@
 from django.shortcuts import get_object_or_404, redirect, render
+from django.core.paginator import Paginator
 from django.db.models import Count, Avg, Q
 from .forms import WorkForm
 from .models import Work, Discipline, Keyword
 from .services import get_discipline_stats
 
 def index(request):
-    works = Work.objects.select_related("discipline", "author").prefetch_related("keywords")[:50]
-    return render(request, "archive/work_list.html", {"works": works})
+    qs = Work.objects.select_related(
+        "discipline", "author"
+    ).prefetch_related("keywords")
+    paginator = Paginator(qs, 25)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+    return render(request, "archive/work_list.html", {"page_obj": page_obj})
 
 def work_create(request):
     if request.method == "POST":
@@ -41,14 +47,14 @@ def search(request):
     query = request.GET.get("q")
     year = request.GET.get("year")
     supervisor = request.GET.get("supervisor")
-    
+
     if query:
         works = works.filter(keywords__name__icontains=query)
     if year:
         works = works.filter(year=year)
     if supervisor:
         works = works.filter(supervisor__icontains=supervisor)
-        
+
     works = works.distinct()[:100]
     return render(request, "archive/search.html", {"works": works})
 

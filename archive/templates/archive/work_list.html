@@ -1,7 +1,7 @@
 {% extends "archive/base.html" %}
 {% block content %}
   <a href="{% url 'archive:create' %}">+ Добавить работу</a>
-  {% for work in works %}
+  {% for work in page_obj %}
     <article>
       <h2>{{ work.title }}</h2>
       <p>{{ work.content|truncatechars:150 }}</p>
@@ -15,4 +15,16 @@
   {% empty %}
     <p>Работ пока нет.</p>
   {% endfor %}
+
+  {% if page_obj.paginator.num_pages > 1 %}
+  <nav style="margin-top: 1.5rem;">
+    {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}">← Назад</a>
+    {% endif %}
+    <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}">Вперёд →</a>
+    {% endif %}
+  </nav>
+  {% endif %}
 {% endblock %}
